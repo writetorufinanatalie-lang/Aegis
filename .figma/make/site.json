@@ -1,0 +1,12 @@
+{
+  "title": "AEGIS — Climate-to-Finance Intelligence",
+  "description": "AEGIS translates climate shocks for GMS Processors, Tiruppur into operational risk, financial impact, funding gap and hazard-specific recommendations.",
+  "language": "en",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": true,
+    "ignoreReducedMotion": false
+  }
+}
