@@ -4,7 +4,7 @@ AEGIS helps a delivery worker decide what protects their liquidity this week whe
 
 ## What the demo does
 
-1. Starts a session with the demo account: `W001` / `demo123`.
+1. Starts a session with the demo account: `demo123`.
 2. Uses **synthetic, clearly labelled** income and spending records.
 3. Fetches a live 72-hour Open-Meteo forecast for supported cities when available; otherwise it labels a conservative demo fallback.
 4. Runs three transparent models: income stability, weather-to-work disruption, and repayment resilience.
@@ -49,8 +49,5 @@ The live app is a small, self-contained set of files:
 - `src/App.tsx`, `src/main.tsx`, `src/index.css`, `src/lib/api.ts`, `src/lib/config.ts`
 - `backend/app.py` + `backend/services/worker_finance.py`
 
-Everything a judge or teammate needs to read to understand the product is in those seven files.
 
 **Not wired into the running app** (`src/pages/*`, `src/components/Sidebar.tsx`, `src/context/AppContext.tsx`, `src/services/*`, `src/data/*`, `src/types/*`, and `backend/services/{risk_engine,financial_engine,recommendation_engine,repayment_engine,simulation_engine,alert_engine,consent_service,financial_health,financial_data_provider,weather_service}.py`, `backend/config/*`, `backend/ml/*`): this is the earlier **ClimateShield MSME** factory-heatwave prototype, kept from before AEGIS pivoted to worker income resilience. `main.tsx` only imports `App.tsx`, and `App.tsx` only imports `src/lib/api.ts` — none of the files above are ever reached by the running app, confirmed by `grep` for their import paths.
-
-Before a judge browses the repo or a teammate joins, delete (or move to an `/archive` folder) everything in the "not wired in" list above — right now the repo tells two different product stories at once, which is the single biggest thing standing between this build and a clean walkthrough.
