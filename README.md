@@ -1,53 +1,141 @@
-# AEGIS — worker financial resilience
+# AEGIS
 
-AEGIS helps a delivery worker decide what protects their liquidity this week when income is irregular and weather may disrupt work. It is a hackathon MVP, not a lending, insurance, or financial-advice product.
+**Financial resilience decision support for gig and informal workers**
 
-## What the demo does
+AEGIS helps workers plan around changing income, essential expenses, savings, debt repayments, and weather disruptions. It presents a suggested next step, explains the factors behind it, and lets users explore “what if” scenarios.
 
-1. Starts a session with the demo account: `demo123`.
-2. Uses **synthetic, clearly labelled** income and spending records.
-3. Fetches a live 72-hour Open-Meteo forecast for supported cities when available; otherwise it labels a conservative demo fallback.
-4. Runs three transparent models: income stability, weather-to-work disruption, and repayment resilience.
-5. Gives a concrete next action, shows why, and lets the user test an income shock without changing the baseline.
+AEGIS is a hackathon MVP. It is not a lending product, credit score, or source of financial advice. **All financial records in this demo are synthetic.**
 
-## Model disclosure
+## What you can do
 
-The three models are explainable deterministic heuristics. They are **not trained machine-learning models**, a credit score, or an automated credit decision. Their inputs and confidence are returned by `/api/models` and visible in **How AEGIS works**.
+- Review an overview and a suggested action for the week.
+- Explore sample income and spending data.
+- See a 72-hour weather and work-disruption monitor for supported areas.
+- Review financial resilience analysis, alerts, and model information.
+- Test income and expense scenarios without changing the baseline demo data.
+- Manage demo consent and clear the session’s synthetic data.
+- View aggregate portfolio analytics through a separate business API.
 
-## Run
+## Run locally
 
-Prerequisites: Python 3.11+ and Node 22+.
+### Requirements
+
+- Python 3.11 or later
+- Node.js 22 or later
+- npm
+
+### 1. Configure the frontend
+
+From the project root, create a local environment file:
+
+```bash
+cp .env.example .env
+```
+
+On Windows Command Prompt:
+
+```cmd
+copy .env.example .env
+```
+
+The example configures the frontend to use the local backend at `http://localhost:8000`.
+
+### 2. Start the backend
+
+In a terminal at the project root:
+
+```bash
+python -m venv .venv
+```
+
+Activate the environment:
+
+```bash
+# Windows PowerShell
+.venv\Scripts\Activate.ps1
+
+# macOS / Linux
+source .venv/bin/activate
+```
+
+Install dependencies and start the API:
 
 ```bash
 pip install -r backend/requirements.txt
 python -m uvicorn app:app --app-dir backend --reload --port 8000
+```
+
+The API documentation is available at [http://localhost:8000/docs](http://localhost:8000/docs).
+
+### 3. Start the frontend
+
+In a second terminal at the project root:
+
+```bash
 npm install
 npm run dev
 ```
 
-Open the frontend on port 8443. `VITE_API_BASE_URL=http://localhost:8000` is configured in `.env`.
+Open the local URL printed by Vite, usually [http://localhost:5173](http://localhost:5173).
 
-## Verify
+## Demo access
+
+Use the demo worker account:
+
+- **Worker ID:** `W001`
+- **Password:** `demo123`
+
+The business API demo key is available from the backend at `/api/business/demo-key`. It is for demonstration only and must not be used as a production credential.
+
+## Data, models, and privacy
+
+- The worker financial records and business portfolio data are synthetic demo data.
+- The app does not require bank passwords, one-time codes, PINs, or card numbers.
+- Weather data is requested from Open-Meteo when available; the app labels the forecast source and uses a labelled fallback when it is unavailable.
+- Worker sessions are isolated by session token and expire after inactivity. Logging out invalidates the session token.
+- Worker session data and business portfolio analytics use separate API access paths. The business API returns aggregate demo analytics, not individual worker records.
+- The worker decision models are transparent heuristics. They are not trained credit models or automated credit decisions. Any synthetic model results shown elsewhere in the demo should also be understood as experimental and not representative of real people.
+
+These controls describe this demo implementation; they are not a claim of production-grade security, regulatory compliance, or a production consent-management system.
+
+## Verify the project
+
+Run the backend tests:
 
 ```bash
 python -m pytest backend/tests -q
+```
+
+Check TypeScript and build the frontend:
+
+```bash
 npx tsc --noEmit
 npm run build
 ```
 
-## Data and privacy
+## Project structure
 
-- No bank passwords, OTPs, PINs, card numbers, or exact location are collected.
-- Financial records are synthetic session data only.
-- Weather is live only when the API is reachable and is visibly source-labelled.
-- Consent controls govern the demo session state; they do not represent a production consent-management system.
+```text
+.
+├── backend/
+│   ├── app.py                 # FastAPI endpoints
+│   ├── requirements.txt       # Python dependencies
+│   ├── services/
+│   │   ├── worker_finance.py  # Worker demo data and analysis
+│   │   ├── ml_engine.py       # Experimental model information
+│   │   └── portfolio_engine.py# Aggregate demo portfolio data
+│   └── tests/
+├── src/
+│   ├── App.tsx                # Main React application
+│   ├── main.tsx               # Frontend entry point
+│   ├── index.css               # Application styles
+│   └── lib/
+│       └── api.ts              # API client
+├── .env.example
+├── package.json
+└── vite.config.ts
+```
 
-## Architecture — what's actually running
+## License
 
-The live app is a small, self-contained set of files:
-
-- `src/App.tsx`, `src/main.tsx`, `src/index.css`, `src/lib/api.ts`, `src/lib/config.ts`
-- `backend/app.py` + `backend/services/worker_finance.py`
-
-
-**Not wired into the running app** (`src/pages/*`, `src/components/Sidebar.tsx`, `src/context/AppContext.tsx`, `src/services/*`, `src/data/*`, `src/types/*`, and `backend/services/{risk_engine,financial_engine,recommendation_engine,repayment_engine,simulation_engine,alert_engine,consent_service,financial_health,financial_data_provider,weather_service}.py`, `backend/config/*`, `backend/ml/*`): this is the earlier **ClimateShield MSME** factory-heatwave prototype, kept from before AEGIS pivoted to worker income resilience. `main.tsx` only imports `App.tsx`, and `App.tsx` only imports `src/lib/api.ts` — none of the files above are ever reached by the running app, confirmed by `grep` for their import paths.
+No license file was present in this project archive. Contact the project maintainers before reusing or distributing the code.
